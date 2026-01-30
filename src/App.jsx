@@ -1,11 +1,30 @@
 import { Clock, Pizza, Search } from "lucide-react";
 import CartSidebar from "./components/CartSideBar.jsx";
+import { menuData } from "./data/menu.js";
+import { useState } from "react";
+import MenuTitle from "./components/MenuTitle.jsx";
 
 const App = () => {
+  const categories = [
+    "All",
+    ...new Set(menuData.map((item) => item.categories)),
+  ];
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredMenu = menuData.filter((item) => {
+    const matchCategory =
+      selectedCategory === "All" || item.categories === selectedCategory;
+    const matchSearch = item.name
+      .toLocaleLowerCase()
+      .includes(searchTerm.toLocaleLowerCase());
+    return matchCategory && matchSearch;
+  });
+
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden">
       {/* Main Content */}
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col min-w-0">
         <header className="bg-white border-b border-slate-200 px-6 py-4 flex max-md:flex-col items-center justify-between max-md:space-y-6">
           {/* Brand Name*/}
           <div className="flex items-center">
@@ -30,12 +49,36 @@ const App = () => {
 
               <input
                 type="text"
+                value={searchTerm}
                 placeholder="Search items..."
                 className="pl-10 pr-4 py-2 bg-slate-100 border-none outline-none rounded-xl text-sm focus:ring-2 focus:ring-slate-400 w-64 transition-all"
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           </div>
         </header>
+
+        {/* Categories */}
+        <div className="px-6 py-4 flex gap-2 overflow-x-auto">
+          {categories.map((category) => (
+            <button
+              key={category}
+              className={`px-4 py-2 ${selectedCategory === category ? "bg-orange-500 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"} rounded-lg transition-colors font-bold text-sm cursor-pointer whitespace-nowrap outtline-none`}
+              onClick={(e) => setSelectedCategory(category)}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+
+        {/* Menu Tile */}
+        <div className="flex-1 overflow-y-auto p-6 custom-scroll-bar">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-6 py-4">
+            {filteredMenu.map((item) => (
+              <MenuTitle key={item.id} item={item} />
+            ))}
+          </div>
+        </div>
       </div>
       {/* Cart Sidebar */}
       <aside className="w-100 shrink-0">
