@@ -1,10 +1,11 @@
 import React from "react";
 
-const MenuTitle = ({ item }) => {
+const MenuTitle = ({ item, onUpdate }) => {
   return (
     <div
       key={item.id}
       className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 hover:shadow-md transition-shadow cursor-pointer"
+      onClick={() => onUpdate(item, 1)}
     >
       <div className="overflow-hidden rounded-xl shadow-sm mb-2">
         <img

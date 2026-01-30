@@ -9,6 +9,7 @@ const App = () => {
     "All",
     ...new Set(menuData.map((item) => item.categories)),
   ];
+
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -20,6 +21,39 @@ const App = () => {
       .includes(searchTerm.toLocaleLowerCase());
     return matchCategory && matchSearch;
   });
+
+  // Load previous CartItem from localStorage
+  const [cart, setCart] = useState(() => {
+    const savedCart = localStorage.getItem("cartItems");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  //update Cart Items in localStorage
+  const updateCartItems = (item, quantity) => {
+    setCart((prevCart) => {
+      // Check if item already exists in cart
+      const existingItem = prevCart.find((i) => i.id === item.id);
+      // If item does not exist and quantity is positive, add it to cart
+      if(existingItem){
+        const newQty = existingItem.quantity + quantity;
+        //  Remove item if quantity is zero or less
+        if(newQty <= 0) return prevCart.filter((i) => i.id !== item.id);
+        // Update item quantity
+        return prevCart.map((i) => i.id === item.id ? {...i, quantity: newQty} : i);
+      }
+
+      // If item does not exist and quantity is positive, add it to cart
+      if(quantity > 0){
+        return [...prevCart, {...item, quantity: quantity}];
+      }
+
+      // If quantity is zero or negative and item does not exist, do nothing
+      return prevCart;
+    })
+  };
+
+  console.log(cart);
+  
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden">
@@ -75,14 +109,14 @@ const App = () => {
         <div className="flex-1 overflow-y-auto p-6 custom-scroll-bar">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-6 py-4">
             {filteredMenu.map((item) => (
-              <MenuTitle key={item.id} item={item} />
+              <MenuTitle key={item.id} item={item} onUpdate={updateCartItems} />
             ))}
           </div>
         </div>
       </div>
       {/* Cart Sidebar */}
       <aside className="w-100 shrink-0">
-        <CartSidebar />
+        <CartSidebar cart={cart} />
       </aside>
     </div>
   );
