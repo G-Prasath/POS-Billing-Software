@@ -1,6 +1,8 @@
 import React from 'react'
 
-const Receipts = () => {
+const Receipts = ({ orderRecipet }) => {
+  console.log(orderRecipet);
+  
   return (
     <div>
       Receipts

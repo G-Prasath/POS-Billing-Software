@@ -1,10 +1,14 @@
 import { Clock, Pizza, Search } from "lucide-react";
 import CartSidebar from "./components/CartSideBar.jsx";
 import { menuData } from "./data/menu.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MenuTitle from "./components/MenuTitle.jsx";
+import OrderHistory from "./components/OrderHistory.jsx";
+import Receipts from "./components/Receipts.jsx";
 
 const App = () => {
+  const [showHistory, setShowHistory] = useState(false);
+  const [printReciept, setPrintReciept] = useState(null);
   const categories = [
     "All",
     ...new Set(menuData.map((item) => item.categories)),
@@ -28,32 +32,72 @@ const App = () => {
     return savedCart ? JSON.parse(savedCart) : [];
   });
 
+  // Load previous Order details from localStorage
+  const [orderDetails, setOrderDetails] = useState(() => {
+    const saveOrderDetails = localStorage.getItem("orderDetails");
+    return saveOrderDetails ? JSON.parse(saveOrderDetails) : [];
+  });
+
+  // Save Cart Items to localStorage whenever cart changes
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cart));
+  }, [cart]);
+
+  // save Order Details to localStorage whenever orderDetails changes
+  useEffect(() => {
+    localStorage.setItem("orderDetails", JSON.stringify(orderDetails));
+  }, [orderDetails]);
+
   //update Cart Items in localStorage
   const updateCartItems = (item, quantity) => {
     setCart((prevCart) => {
       // Check if item already exists in cart
       const existingItem = prevCart.find((i) => i.id === item.id);
       // If item does not exist and quantity is positive, add it to cart
-      if(existingItem){
+      if (existingItem) {
         const newQty = existingItem.quantity + quantity;
         //  Remove item if quantity is zero or less
-        if(newQty <= 0) return prevCart.filter((i) => i.id !== item.id);
+        if (newQty <= 0) return prevCart.filter((i) => i.id !== item.id);
         // Update item quantity
-        return prevCart.map((i) => i.id === item.id ? {...i, quantity: newQty} : i);
+        return prevCart.map((i) =>
+          i.id === item.id ? { ...i, quantity: newQty } : i,
+        );
       }
 
       // If item does not exist and quantity is positive, add it to cart
-      if(quantity > 0){
-        return [...prevCart, {...item, quantity: quantity}];
+      if (quantity > 0) {
+        return [...prevCart, { ...item, quantity: quantity }];
       }
 
       // If quantity is zero or negative and item does not exist, do nothing
       return prevCart;
-    })
+    });
   };
 
-  console.log(cart);
-  
+  // Hande Clear Cart
+  const handleClear = () => {
+    if (window.confirm("Are you sure you want to clear the cart?")) {
+      setCart([]);
+    }
+  };
+
+  // Print Reciepts
+  const handlePrint = () => {
+    const newOrder = {
+      id: "POS-" + Date.now().toString(),
+      date: new Date().toDateString("dd-MM-yyyy"),
+      items: cart,
+      total:
+        cart.reduce((sum, item) => sum + item.price * item.quantity, 0) * 1.01, // including 1% tax
+    };
+    setOrderDetails((prev) => [...prev, newOrder]);
+    setPrintReciept(newOrder);
+    setTimeout(() => {
+      window.print();
+      setCart([]);
+      setPrintReciept(null);
+    });
+  };
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden">
@@ -74,7 +118,10 @@ const App = () => {
 
           {/* History And Search */}
           <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition-colors font-bold text-sm cursor-pointer">
+            <button
+              onClick={() => setShowHistory(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition-colors font-bold text-sm cursor-pointer"
+            >
               <Clock size={16} /> History
             </button>
 
@@ -114,10 +161,29 @@ const App = () => {
           </div>
         </div>
       </div>
+
       {/* Cart Sidebar */}
       <aside className="w-100 shrink-0">
-        <CartSidebar cart={cart} />
+        <CartSidebar
+          cart={cart}
+          onClear={handleClear}
+          onUpdate={updateCartItems}
+          onPrint={handlePrint}
+        />
       </aside>
+
+      {/* Print Reciept */}
+      <div id="printable-area" className="hidden">
+        <Receipts orderRecipet={printReciept} />
+      </div>
+
+      {/* HistoryPage  */}
+      {showHistory && (
+        <OrderHistory
+          orders={orderDetails}
+          onClose={() => setShowHistory(false)}
+        />
+      )}
     </div>
   );
 };
