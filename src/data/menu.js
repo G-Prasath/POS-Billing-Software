@@ -11,7 +11,7 @@ export const menuData = [
     name: "Pepperoni Pizza",
     price: 299,
     categories: "Pizza",
-    imageUrl: "https://images.unsplash.com/photo-1548365328-9f547f4a1c6e",
+    imageUrl: "https://images.unsplash.com/photo-1628840042765-356cda07504e",
   },
   {
     id: 3,
@@ -25,7 +25,7 @@ export const menuData = [
     name: "BBQ Chicken Pizza",
     price: 329,
     categories: "Pizza",
-    imageUrl: "https://images.unsplash.com/photo-1601924577970-7e9f34c46b2d",
+    imageUrl: "https://plus.unsplash.com/premium_photo-1733306588881-0411931d4fed",
   },
 
   {
@@ -40,7 +40,7 @@ export const menuData = [
     name: "Veg Burger",
     price: 149,
     categories: "Burger",
-    imageUrl: "https://images.unsplash.com/photo-1606755962773-d324e6b5c39c",
+    imageUrl: "https://images.unsplash.com/photo-1571091718767-18b5b1457add",
   },
   {
     id: 7,
@@ -62,7 +62,7 @@ export const menuData = [
     name: "Chicken Biryani",
     price: 299,
     categories: "Indian",
-    imageUrl: "https://images.unsplash.com/photo-1600628422019-1c42cde07b5e",
+    imageUrl: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a",
   },
   {
     id: 10,
@@ -76,14 +76,14 @@ export const menuData = [
     name: "Paneer Butter Masala",
     price: 219,
     categories: "Indian",
-    imageUrl: "https://images.unsplash.com/photo-1626776876729-bab4361a36d6",
+    imageUrl: "https://images.unsplash.com/photo-1690401767645-595de0e0e5f8",
   },
   {
     id: 12,
     name: "Butter Naan",
     price: 49,
     categories: "Indian",
-    imageUrl: "https://images.unsplash.com/photo-1626776876231-9a0e8c1f64f7",
+    imageUrl: "https://images.unsplash.com/photo-1567624725806-227866a3f784",
   },
 
   {
@@ -105,14 +105,14 @@ export const menuData = [
     name: "Manchurian",
     price: 179,
     categories: "Chinese",
-    imageUrl: "https://images.unsplash.com/photo-1604908176997-4310d4a3a9f3",
+    imageUrl: "https://images.unsplash.com/photo-1682622110433-65513a55d7da",
   },
   {
     id: 16,
     name: "Spring Rolls",
     price: 159,
     categories: "Chinese",
-    imageUrl: "https://images.unsplash.com/photo-1605475128023-8cbdc13c3702",
+    imageUrl: "https://images.unsplash.com/photo-1695712641569-05eee7b37b6d",
   },
 
   {

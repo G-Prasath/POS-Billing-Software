@@ -99,6 +99,15 @@ const App = () => {
     });
   };
 
+  // History Print
+  const handleHistoryPrint = (order) => {
+    setPrintReciept(order);
+    setTimeout(() => {
+      window.print();
+      setPrintReciept(null);
+    });
+  };
+
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden">
       {/* Main Content */}
@@ -174,7 +183,10 @@ const App = () => {
 
       {/* Print Reciept */}
       <div id="printable-area" className="hidden">
-        <Receipts orderRecipet={printReciept} />
+        <Receipts
+          orderRecipet={printReciept}
+          cart={printReciept ? printReciept.items : cart}
+        />
       </div>
 
       {/* HistoryPage  */}
@@ -182,6 +194,7 @@ const App = () => {
         <OrderHistory
           orders={orderDetails}
           onClose={() => setShowHistory(false)}
+          onPrint={handleHistoryPrint}
         />
       )}
     </div>
